@@ -1,16 +1,33 @@
-import { AppShell, Navbar, Header, Button } from '@mantine/core';
+import {
+  MantineProvider,
+  ColorSchemeProvider,
+  ColorScheme,
+} from "@mantine/core";
+import { MyAppShell } from "./AppShell/MyAppShell";
+import { useColorScheme, useLocalStorage } from "@mantine/hooks";
 
-export default function MyApp() {
+export default function App() {
+  const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({
+    key: "mantine-color-scheme",
+    defaultValue: useColorScheme("light"),
+    getInitialValueInEffect: true,
+  });
+
+  const toggleColorScheme = (value?: ColorScheme) =>
+    setColorScheme(value || (colorScheme === "dark" ? "light" : "dark"));
+
   return (
-  <AppShell
-      padding="lg"
-      navbar={<Navbar width={{ base: 300 }} height={500} p="xs">{/* Navbar content */}</Navbar>}
-      header={<Header height={60} p="xs">{/* Header content */}</Header>}
-      styles={(theme) => ({
-        main: { backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[0] },
-      })}
+    <ColorSchemeProvider
+      colorScheme={colorScheme}
+      toggleColorScheme={toggleColorScheme}
     >
-    <Button>Hello world!</Button>
-    </AppShell>
+      <MantineProvider
+        theme={{ colorScheme }}
+        withGlobalStyles
+        withNormalizeCSS
+      >
+        <MyAppShell />
+      </MantineProvider>
+    </ColorSchemeProvider>
   );
 }
