@@ -5,6 +5,13 @@ import {
 } from "@mantine/core";
 import { MyAppShell } from "./AppShell/MyAppShell";
 import { useColorScheme, useLocalStorage } from "@mantine/hooks";
+import { IntlProvider } from "react-intl";
+import React, { useMemo } from "react";
+
+export const LocalStorageTranslationsContext = React.createContext({
+  localStorageTranslations: "",
+  setLocalStorageTranslations: (x: string) => {},
+});
 
 export default function App() {
   const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({
@@ -13,21 +20,41 @@ export default function App() {
     getInitialValueInEffect: true,
   });
 
+  const [localStorageTranslations, setLocalStorageTranslations] =
+    useLocalStorage({ key: "translations" });
+
+  const localStorageTranslationsValue = useMemo(
+    () => ({ localStorageTranslations, setLocalStorageTranslations }),
+    [localStorageTranslations]
+  );
+
   const toggleColorScheme = (value?: ColorScheme) =>
     setColorScheme(value || (colorScheme === "dark" ? "light" : "dark"));
 
   return (
-    <ColorSchemeProvider
-      colorScheme={colorScheme}
-      toggleColorScheme={toggleColorScheme}
+    <LocalStorageTranslationsContext.Provider
+      value={localStorageTranslationsValue}
     >
-      <MantineProvider
-        theme={{ colorScheme }}
-        withGlobalStyles
-        withNormalizeCSS
+      <IntlProvider
+        messages={
+          localStorageTranslations && JSON.parse(localStorageTranslations)
+        }
+        locale="fr"
+        defaultLocale="en"
       >
-        <MyAppShell />
-      </MantineProvider>
-    </ColorSchemeProvider>
+        <ColorSchemeProvider
+          colorScheme={colorScheme}
+          toggleColorScheme={toggleColorScheme}
+        >
+          <MantineProvider
+            theme={{ colorScheme }}
+            withGlobalStyles
+            withNormalizeCSS
+          >
+            <MyAppShell />
+          </MantineProvider>
+        </ColorSchemeProvider>
+      </IntlProvider>
+    </LocalStorageTranslationsContext.Provider>
   );
 }

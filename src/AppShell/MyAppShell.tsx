@@ -16,6 +16,7 @@ import {
 } from "@mantine/core";
 import { IconLanguage, IconMoonStars, IconSun } from "@tabler/icons";
 import { useState } from "react";
+import { TranslationDropzone } from "../UploadTranslation/TranslationDropzone";
 import { MainLinks } from "./MainLinks";
 import { User } from "./User";
 
@@ -99,7 +100,7 @@ export function MyAppShell() {
         },
       })}
     >
-      Your application goes here
+      <TranslationDropzone />
     </AppShell>
   );
 }
