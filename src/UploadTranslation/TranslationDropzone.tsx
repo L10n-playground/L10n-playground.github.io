@@ -106,6 +106,8 @@ export function TranslationDropzone() {
         values={{ ts: Date.now() }}
       />
       <Button type="submit">Click to save</Button>
+      
+      <Button onClick={() => setLocalStorageTranslations("")}>Clear translations</Button>
     </form>
   );
 }

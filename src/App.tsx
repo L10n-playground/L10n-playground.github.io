@@ -41,6 +41,13 @@ export default function App() {
         }
         locale="fr"
         defaultLocale="en"
+        onError={(err) => {
+          if (err.code === "MISSING_TRANSLATION") {
+            console.warn("Missing translation", err.message);
+            return;
+          }
+          throw err;
+        }}
       >
         <ColorSchemeProvider
           colorScheme={colorScheme}
