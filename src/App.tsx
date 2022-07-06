@@ -9,8 +9,11 @@ import { IntlProvider } from "react-intl";
 import React, { useMemo } from "react";
 
 export const LocalStorageTranslationsContext = React.createContext({
-  localStorageTranslations: "",
   setLocalStorageTranslations: (x: string) => {},
+});
+
+export const LocalStorageLocaleContext = React.createContext({
+  setLocalStorageLocale: (x: string) => {},
 });
 
 export default function App() {
@@ -23,45 +26,50 @@ export default function App() {
   const [localStorageTranslations, setLocalStorageTranslations] =
     useLocalStorage({ key: "translations" });
 
-  const localStorageTranslationsValue = useMemo(
-    () => ({ localStorageTranslations, setLocalStorageTranslations }),
-    [localStorageTranslations]
-  );
+  const [localStorageLocale, setLocalStorageLocale] = useLocalStorage({
+    key: "locale",
+  });
 
   const toggleColorScheme = (value?: ColorScheme) =>
     setColorScheme(value || (colorScheme === "dark" ? "light" : "dark"));
 
   return (
     <LocalStorageTranslationsContext.Provider
-      value={localStorageTranslationsValue}
+      value={{ setLocalStorageTranslations }}
     >
-      <IntlProvider
-        messages={
-          localStorageTranslations && JSON.parse(localStorageTranslations)
-        }
-        locale="fr"
-        defaultLocale="en"
-        onError={(err) => {
-          if (err.code === "MISSING_TRANSLATION") {
-            console.warn("Missing translation", err.message);
-            return;
+      <LocalStorageLocaleContext.Provider value={{ setLocalStorageLocale }}>
+        <IntlProvider
+          messages={
+            localStorageTranslations && JSON.parse(localStorageTranslations)
           }
-          throw err;
-        }}
-      >
-        <ColorSchemeProvider
-          colorScheme={colorScheme}
-          toggleColorScheme={toggleColorScheme}
+          locale={localStorageLocale != "" ? localStorageLocale : "en"}
+          defaultLocale="en"
+          onError={(err) => {
+            if (err.code === "MISSING_TRANSLATION") {
+              console.warn("Missing translation", err.message);
+              return;
+            }
+            if (err.code === "INVALID_CONFIG") {
+              console.warn("Invalid config", err.message);
+              return;
+            }
+            throw err;
+          }}
         >
-          <MantineProvider
-            theme={{ colorScheme }}
-            withGlobalStyles
-            withNormalizeCSS
+          <ColorSchemeProvider
+            colorScheme={colorScheme}
+            toggleColorScheme={toggleColorScheme}
           >
-            <MyAppShell />
-          </MantineProvider>
-        </ColorSchemeProvider>
-      </IntlProvider>
+            <MantineProvider
+              theme={{ colorScheme }}
+              withGlobalStyles
+              withNormalizeCSS
+            >
+              <MyAppShell />
+            </MantineProvider>
+          </ColorSchemeProvider>
+        </IntlProvider>
+      </LocalStorageLocaleContext.Provider>
     </LocalStorageTranslationsContext.Provider>
   );
 }

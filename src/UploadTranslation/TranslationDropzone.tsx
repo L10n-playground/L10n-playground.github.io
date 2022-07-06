@@ -4,14 +4,19 @@ import {
   useMantineTheme,
   MantineTheme,
   Button,
-  Checkbox,
+  Select,
+  Space,
 } from "@mantine/core";
 import { IconUpload, IconCheck, IconX, TablerIcon } from "@tabler/icons";
 import { Dropzone, DropzoneStatus } from "@mantine/dropzone";
-import { useCallback, useContext, useState } from "react";
-import { useDidUpdate, useForm, useLocalStorage } from "@mantine/hooks";
+import { forwardRef, useContext, useState } from "react";
+import { useForm } from "@mantine/hooks";
 import { FormattedMessage } from "react-intl";
-import { LocalStorageTranslationsContext } from "../App";
+import {
+  LocalStorageLocaleContext,
+  LocalStorageTranslationsContext,
+} from "../App";
+import languages from "../languages.json";
 
 function getIconColor(status: DropzoneStatus, theme: MantineTheme) {
   return status.accepted
@@ -74,6 +79,7 @@ export function TranslationDropzone() {
   const form = useForm({
     initialValues: {
       translationFile: File.prototype,
+      locale: "",
     },
   });
 
@@ -81,7 +87,10 @@ export function TranslationDropzone() {
     LocalStorageTranslationsContext
   );
 
+  const { setLocalStorageLocale } = useContext(LocalStorageLocaleContext);
+
   const handleSubmit = async (values: typeof form.values) => {
+    setLocalStorageLocale(values.locale);
     setLocalStorageTranslations(await values.translationFile.text());
   };
 
@@ -100,14 +109,30 @@ export function TranslationDropzone() {
       >
         {() => dropzoneChildren(dropzoneStatus, theme)}
       </Dropzone>
+
+      <Select
+        label="Select your language"
+        placeholder="Pick one"
+        searchable
+        onChange={(val) => val && form.setFieldValue("locale", val)}
+        data={Object.entries(languages).map(([key, value]) => ({
+          value: key,
+          label: value,
+        }))}
+      />
+      <Space h="md" />
+      <Button type="submit">Click to save</Button>
+
+      <Space h="md" />
+      <Button onClick={() => setLocalStorageTranslations("")}>
+        Clear translations
+      </Button>
+      <Space h="md" />
       <FormattedMessage
         id="myMessage"
         defaultMessage="Today is {ts, date, ::yyyyMMdd}"
         values={{ ts: Date.now() }}
       />
-      <Button type="submit">Click to save</Button>
-      
-      <Button onClick={() => setLocalStorageTranslations("")}>Clear translations</Button>
     </form>
   );
 }
