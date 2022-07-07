@@ -96,7 +96,6 @@ export function TranslationDropzone() {
     values.translationFile instanceof File &&
       setLocalStorageTranslations(await values.translationFile.text());
     setDropzoneStatus({ accepted: false, rejected: false });
-    form.reset();
   };
 
   return (
