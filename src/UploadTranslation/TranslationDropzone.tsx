@@ -93,7 +93,10 @@ export function TranslationDropzone() {
 
   const handleSubmit = async (values: typeof form.values) => {
     setLocalStorageLocale(values.locale);
-    setLocalStorageTranslations(await values.translationFile.text());
+    values.translationFile instanceof File &&
+      setLocalStorageTranslations(await values.translationFile.text());
+    setDropzoneStatus({ accepted: false, rejected: false });
+    form.reset();
   };
 
   return (
