@@ -5,14 +5,15 @@ import {
 } from "@mantine/core";
 import { MyAppShell } from "./AppShell/MyAppShell";
 import { useColorScheme, useLocalStorage } from "@mantine/hooks";
-import { IntlProvider } from "react-intl";
-import React, { useMemo } from "react";
+import { IntlProvider, ReactIntlErrorCode } from "react-intl";
+import React from "react";
 
 export const LocalStorageTranslationsContext = React.createContext({
   setLocalStorageTranslations: (x: string) => {},
 });
 
 export const LocalStorageLocaleContext = React.createContext({
+  localStorageLocale: "",
   setLocalStorageLocale: (x: string) => {},
 });
 
@@ -37,7 +38,9 @@ export default function App() {
     <LocalStorageTranslationsContext.Provider
       value={{ setLocalStorageTranslations }}
     >
-      <LocalStorageLocaleContext.Provider value={{ setLocalStorageLocale }}>
+      <LocalStorageLocaleContext.Provider
+        value={{ localStorageLocale, setLocalStorageLocale }}
+      >
         <IntlProvider
           messages={
             localStorageTranslations && JSON.parse(localStorageTranslations)
@@ -45,14 +48,15 @@ export default function App() {
           locale={localStorageLocale != "" ? localStorageLocale : "en"}
           defaultLocale="en"
           onError={(err) => {
-            if (err.code === "MISSING_TRANSLATION") {
-              console.warn("Missing translation", err.message);
+            if (
+              err.code === ReactIntlErrorCode.MISSING_TRANSLATION ||
+              err.code === ReactIntlErrorCode.INVALID_CONFIG ||
+              err.code === ReactIntlErrorCode.MISSING_DATA
+            ) {
+              console.warn(err.message);
               return;
             }
-            if (err.code === "INVALID_CONFIG") {
-              console.warn("Invalid config", err.message);
-              return;
-            }
+
             throw err;
           }}
         >

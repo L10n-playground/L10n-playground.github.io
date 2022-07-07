@@ -76,18 +76,20 @@ export function TranslationDropzone() {
     rejected: false,
   });
 
-  const form = useForm({
-    initialValues: {
-      translationFile: File.prototype,
-      locale: "",
-    },
-  });
-
   const { setLocalStorageTranslations } = useContext(
     LocalStorageTranslationsContext
   );
 
-  const { setLocalStorageLocale } = useContext(LocalStorageLocaleContext);
+  const { localStorageLocale, setLocalStorageLocale } = useContext(
+    LocalStorageLocaleContext
+  );
+
+  const form = useForm({
+    initialValues: {
+      translationFile: File.prototype,
+      locale: localStorageLocale,
+    },
+  });
 
   const handleSubmit = async (values: typeof form.values) => {
     setLocalStorageLocale(values.locale);
@@ -114,11 +116,11 @@ export function TranslationDropzone() {
         label="Select your language"
         placeholder="Pick one"
         searchable
-        onChange={(val) => val && form.setFieldValue("locale", val)}
         data={Object.entries(languages).map(([key, value]) => ({
           value: key,
           label: value,
         }))}
+        {...form.getInputProps("locale")}
       />
       <Space h="md" />
       <Button type="submit">Click to save</Button>
