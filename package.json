@@ -6,7 +6,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "extractMessages": "formatjs extract \"src/**/*.{ts,tsx,vue}\" --ignore=\"src/vite-env.d.ts\" --out-file dist/english.json --flatten"
+    "extractMessages": "formatjs extract \"src/**/*.{ts,tsx,vue}\" --ignore=\"src/vite-env.d.ts\" --out-file dist/english.json --flatten --format crowdin"
   },
   "dependencies": {
     "@mantine/core": "^4.2.11",
