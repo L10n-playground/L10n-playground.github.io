@@ -17,6 +17,22 @@ export const LocalStorageLocaleContext = React.createContext({
   setLocalStorageLocale: (x: string) => {},
 });
 
+interface TranslationKey {
+  description: string,
+  message: string
+}
+  
+function loadLocalStorageTranslations(localStorageTranslations: string) {
+  if (localStorageTranslations) {
+    const parsedJSON: TranslationKey[] = JSON.parse(localStorageTranslations)
+    const translations: Record<string, string> = {}
+    for (const [keyId, key] of Object.entries(parsedJSON)) {
+        translations[keyId] = key.message
+    }
+    return translations;
+  }
+}
+
 export default function App() {
   const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({
     key: "mantine-color-scheme",
@@ -43,7 +59,7 @@ export default function App() {
       >
         <IntlProvider
           messages={
-            localStorageTranslations && JSON.parse(localStorageTranslations)
+            loadLocalStorageTranslations(localStorageTranslations)
           }
           locale={localStorageLocale != "" ? localStorageLocale : "en"}
           defaultLocale="en"
