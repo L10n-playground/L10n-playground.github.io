@@ -99,44 +99,61 @@ export function TranslationDropzone() {
   };
 
   return (
-    <form onSubmit={form.onSubmit(handleSubmit)}>
-      <Dropzone
-        onDrop={async (files) => {
-          setDropzoneStatus({ accepted: true, rejected: false });
-          const translationFile = files[0];
-          form.setFieldValue("translationFile", translationFile);
-        }}
-        onReject={() => setDropzoneStatus({ accepted: false, rejected: true })}
-        maxSize={10 * 1024 ** 2}
-        accept={["application/json"]}
-        multiple={false}
-      >
-        {() => dropzoneChildren(dropzoneStatus, theme)}
-      </Dropzone>
+    <>
+      <form onSubmit={form.onSubmit(handleSubmit)}>
+        <Dropzone
+          onDrop={async (files) => {
+            setDropzoneStatus({ accepted: true, rejected: false });
+            const translationFile = files[0];
+            form.setFieldValue("translationFile", translationFile);
+          }}
+          onReject={() =>
+            setDropzoneStatus({ accepted: false, rejected: true })
+          }
+          maxSize={10 * 1024 ** 2}
+          accept={["application/json"]}
+          multiple={false}
+        >
+          {() => dropzoneChildren(dropzoneStatus, theme)}
+        </Dropzone>
 
-      <Select
-        label="Select your language"
-        placeholder="Pick one"
-        searchable
-        data={Object.entries(languages).map(([key, value]) => ({
-          value: key,
-          label: value,
-        }))}
-        {...form.getInputProps("locale")}
-      />
-      <Space h="md" />
-      <Button type="submit">Click to save</Button>
-
+        <Select
+          label="Select your language"
+          placeholder="Pick one"
+          searchable
+          clearable
+          data={Object.entries(languages).map(([key, value]) => ({
+            value: key,
+            label: value,
+          }))}
+          {...form.getInputProps("locale")}
+        />
+        <Space h="md" />
+        <Button type="submit">Click to save</Button>
+      </form>
       <Space h="md" />
       <Button onClick={() => setLocalStorageTranslations("")}>
         Clear translations
       </Button>
+
+      <Space h="md" />
+      <Button component="a" download={"english.json"} href="english.json">
+        Download translation file
+      </Button>
       <Space h="md" />
       <FormattedMessage
         id="myMessage"
-        defaultMessage="Today is {ts, date, ::yyyyMMdd}"
+        defaultMessage="Today is {ts, date, full}"
         values={{ ts: Date.now() }}
+        description="Showing the current day"
       />
-    </form>
+      <Space h="md" />
+      <FormattedMessage
+        id="myPluralization"
+        defaultMessage="I have {count, plural, one {a dog} other {# dogs}}"
+        values={{ count: 0 }}
+        description="Pluralization of dogs"
+      />
+    </>
   );
 }
