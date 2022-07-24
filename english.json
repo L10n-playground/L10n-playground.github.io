@@ -1,10 +1,10 @@
 {
   "myMessage": {
-    "defaultMessage": "Today is {ts, date, full}",
-    "description": "Showing the current day"
+    "description": "Showing the current day",
+    "message": "Today is {ts, date, full}"
   },
   "myPluralization": {
-    "defaultMessage": "{count,plural,one{I have a dog} other{I have # dogs}}",
-    "description": "Pluralization of dogs"
+    "description": "Pluralization of dogs",
+    "message": "{count,plural,one{I have a dog} other{I have # dogs}}"
   }
 }
