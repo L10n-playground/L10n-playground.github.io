@@ -18,16 +18,16 @@ export const LocalStorageLocaleContext = React.createContext({
 });
 
 interface TranslationKey {
-  description: string,
-  message: string
+  description: string;
+  message: string;
 }
-  
+
 function loadLocalStorageTranslations(localStorageTranslations: string) {
   if (localStorageTranslations) {
-    const parsedJSON: TranslationKey[] = JSON.parse(localStorageTranslations)
-    const translations: Record<string, string> = {}
+    const parsedJSON: TranslationKey[] = JSON.parse(localStorageTranslations);
+    const translations: Record<string, string> = {};
     for (const [keyId, key] of Object.entries(parsedJSON)) {
-        translations[keyId] = key.message
+      translations[keyId] = key.message;
     }
     return translations;
   }
@@ -35,16 +35,16 @@ function loadLocalStorageTranslations(localStorageTranslations: string) {
 
 export default function App() {
   const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({
-    key: "mantine-color-scheme",
+    key: "color-scheme",
     defaultValue: useColorScheme("light"),
-    getInitialValueInEffect: true,
   });
 
   const [localStorageTranslations, setLocalStorageTranslations] =
-    useLocalStorage({ key: "translations" });
+    useLocalStorage({ key: "translations", defaultValue: "" });
 
   const [localStorageLocale, setLocalStorageLocale] = useLocalStorage({
     key: "locale",
+    defaultValue: "",
   });
 
   const toggleColorScheme = (value?: ColorScheme) =>
@@ -58,9 +58,7 @@ export default function App() {
         value={{ localStorageLocale, setLocalStorageLocale }}
       >
         <IntlProvider
-          messages={
-            loadLocalStorageTranslations(localStorageTranslations)
-          }
+          messages={loadLocalStorageTranslations(localStorageTranslations)}
           locale={localStorageLocale != "" ? localStorageLocale : "en"}
           defaultLocale="en"
           onError={(err) => {
