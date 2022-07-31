@@ -7,6 +7,7 @@ import { MyAppShell } from "./AppShell/MyAppShell";
 import { useColorScheme, useLocalStorage } from "@mantine/hooks";
 import { IntlProvider, ReactIntlErrorCode } from "react-intl";
 import React from "react";
+import { BrowserRouter } from "react-router-dom";
 
 export const LocalStorageTranslationsContext = React.createContext({
   setLocalStorageTranslations: (x: string) => {},
@@ -83,7 +84,9 @@ export default function App() {
               withGlobalStyles
               withNormalizeCSS
             >
-              <MyAppShell />
+              <BrowserRouter>
+                <MyAppShell />
+              </BrowserRouter>
             </MantineProvider>
           </ColorSchemeProvider>
         </IntlProvider>

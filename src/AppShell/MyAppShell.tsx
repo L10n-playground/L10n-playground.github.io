@@ -6,16 +6,23 @@ import {
   ActionIcon,
   Group,
   useMantineColorScheme,
-  ThemeIcon,
   Aside,
   Footer,
   MediaQuery,
   Burger,
   useMantineTheme,
-  Box,
+  Tooltip,
+  Title,
 } from "@mantine/core";
-import { IconLanguage, IconMoonStars, IconSun } from "@tabler/icons";
+import {
+  IconBrandGithub,
+  IconLanguage,
+  IconMoonStars,
+  IconSettings,
+  IconSunHigh,
+} from "@tabler/icons";
 import { useState } from "react";
+import { Link, Route, Routes, useLocation } from "react-router-dom";
 import { TranslationDropzone } from "../UploadTranslation/TranslationDropzone";
 import { MainLinks } from "./MainLinks";
 import { User } from "./User";
@@ -23,7 +30,7 @@ import { User } from "./User";
 export function MyAppShell() {
   const theme = useMantineTheme();
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
-  const [opened, setOpened] = useState(false);
+  const [responsiveMenuOpened, setResponsiveMenuOpened] = useState(false);
 
   return (
     <AppShell
@@ -35,7 +42,7 @@ export function MyAppShell() {
         <Navbar
           p="md"
           hiddenBreakpoint="sm"
-          hidden={!opened}
+          hidden={!responsiveMenuOpened}
           width={{ sm: 280 }}
         >
           <Navbar.Section grow mt="xs">
@@ -54,8 +61,16 @@ export function MyAppShell() {
         </MediaQuery>
       }
       footer={
-        <Footer height={60} p="md">
-          Application footer
+        <Footer height={70} p="md">
+          <Button
+            component="a"
+            href="https://github.com/L10n-playground/L10n-playground.github.io"
+            target={"_blank"}
+            variant="default"
+            leftIcon={<IconBrandGithub size={24} />}
+          >
+            Source code
+          </Button>
         </Footer>
       }
       header={
@@ -65,29 +80,56 @@ export function MyAppShell() {
               display: "flex",
               justifyContent: "space-between",
               height: "100%",
+              alignItems: "center",
             }}
           >
             <MediaQuery largerThan="sm" styles={{ display: "none" }}>
               <Burger
-                opened={opened}
-                onClick={() => setOpened((o) => !o)}
+                opened={responsiveMenuOpened}
+                onClick={() => setResponsiveMenuOpened((o) => !o)}
                 size="sm"
                 color={theme.colors.gray[6]}
                 mr="xl"
               />
             </MediaQuery>
-            <IconLanguage />
-            <ActionIcon
+            <Button
+              component={Link}
+              to="/"
+              leftIcon={<IconLanguage />}
               variant="default"
-              onClick={() => toggleColorScheme()}
-              size={30}
             >
-              {colorScheme === "dark" ? (
-                <IconSun size={16} />
-              ) : (
-                <IconMoonStars size={16} />
-              )}
-            </ActionIcon>
+              Localization playground
+            </Button>
+            <Group>
+              <Tooltip label="Settings" withinPortal={true}>
+                <ActionIcon
+                  component={Link}
+                  to={
+                    useLocation().pathname === "/settings" ? "/" : "/settings"
+                  }
+                  variant="default"
+                  size={40}
+                >
+                  <IconSettings size={24} />
+                </ActionIcon>
+              </Tooltip>
+              <Tooltip
+                label={`${colorScheme === "dark" ? "Light" : "Dark"} mode`}
+                withinPortal={true}
+              >
+                <ActionIcon
+                  variant="default"
+                  onClick={() => toggleColorScheme()}
+                  size={40}
+                >
+                  {colorScheme === "dark" ? (
+                    <IconSunHigh size={22} />
+                  ) : (
+                    <IconMoonStars size={22} />
+                  )}
+                </ActionIcon>
+              </Tooltip>
+            </Group>
           </div>
         </Header>
       }
@@ -100,7 +142,13 @@ export function MyAppShell() {
         },
       })}
     >
-      <TranslationDropzone />
+      <Routes>
+        <Route path="/settings" element={<TranslationDropzone />} />
+        <Route
+          path="/"
+          element={<Title order={1}>Welcome to Localization playground</Title>}
+        />
+      </Routes>
     </AppShell>
   );
 }
