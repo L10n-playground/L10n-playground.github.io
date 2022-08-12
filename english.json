@@ -1,10 +1,18 @@
 {
+  "myCombination": {
+    "description": "ICU Combination",
+    "message": "{gender, select,\n female {\n  {photo_count, plural,\n   one {{userName} added one photo to her profile.}\n   other {{userName} added # photos to her profile.}}}\n male {\n  {photo_count, plural,\n   one {{userName} added one photo to his profile.}\n   other {{userName} added # photos to his profile.}}}\n other {\n  {photo_count, plural,\n   one {{userName} added one photo to their profile.}\n   other {{userName} added # photos to their profile.}}}}"
+  },
   "myMessage": {
     "description": "Showing the current day",
     "message": "Today is {ts, date, full}"
   },
   "myPluralization": {
     "description": "Pluralization of dogs",
-    "message": "{count,plural,one{I have a dog} other{I have # dogs}}"
+    "message": "{count, plural,\n one {I have a dog}\n other {I have # dogs}}"
+  },
+  "mySelection": {
+    "description": "Gender select",
+    "message": "{gender, select,\n male {He is a male}\n female {She is a female}\n other {They are other}}"
   }
 }
