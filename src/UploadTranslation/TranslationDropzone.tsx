@@ -153,6 +153,33 @@ export function TranslationDropzone() {
         values={{ count: 0 }}
         description="Pluralization of dogs"
       />
+      <Space h="md" />
+      <FormattedMessage
+        id="mySelection"
+        defaultMessage="{gender, select, male {He is a male} female {She is a female} other {They are other}}"
+        values={{ gender: "male" }}
+        description="Gender select"
+      />
+      <Space h="md" />
+      <FormattedMessage
+        id="myCombination"
+        defaultMessage="{gender, select,
+          female {{photo_count, plural,
+            one {{userName} added one photo to her profile.}
+            other {{userName} added # photos to her profile.}}}
+          male {{photo_count, plural,
+            one {{userName} added one photo to his profile.}
+            other {{userName} added # photos to his profile.}}}
+          other {{photo_count, plural,
+            one {{userName} added one photo to their profile.}
+            other {{userName} added # photos to their profile.}}}}"
+        values={{
+          gender: "other",
+          photo_count: 2,
+          userName: "Eric",
+        }}
+        description="ICU Combination"
+      />
     </>
   );
 }

@@ -6,7 +6,7 @@
     "dev": "vite --port 3000",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "extractMessages": "formatjs extract \"src/**/*.{ts,tsx,vue}\" --ignore=\"src/vite-env.d.ts\" --out-file dist/english.json --flatten --format crowdin"
+    "extractMessages": "tsc formatter.ts --outDir build --skipLibCheck && formatjs extract \"src/**/*.{ts,tsx,vue}\" --ignore=\"src/vite-env.d.ts\" --out-file dist/english.json --format build/formatter.js"
   },
   "dependencies": {
     "@emotion/react": "^11.9.3",
@@ -26,6 +26,8 @@
   },
   "devDependencies": {
     "@formatjs/cli": "^5.0.6",
+    "@formatjs/cli-lib": "^5.0.6",
+    "@formatjs/icu-messageformat-parser": "^2.1.4",
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
     "@vitejs/plugin-react": "^2.0.0",
